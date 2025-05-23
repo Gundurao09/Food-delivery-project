@@ -13,9 +13,8 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 
 ##  Setup Instructions
 
-### 1. Clone the repository
 
-- git clone [(https://github.com/Gundurao09/Food-delivery/)]
+### git clone [(https://github.com/Gundurao09/Food-delivery/)]
 
 ### 2. Create and activate a virtual environment
 
