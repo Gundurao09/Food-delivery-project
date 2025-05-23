@@ -3,7 +3,7 @@ from pydantic import BaseModel, Field
 from typing import List, Dict, Optional
 import threading
 
-app = FastAPI(title="Order Management API")
+app = FastAPI(title="Food-Delivery API")
 
 order_id_seq = 1
 db_lock = threading.Lock()
@@ -52,7 +52,7 @@ def get_order(order_id: int):
     order = orders_db.get(order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    response = order.dict()
+    response = order
     if order.status == "Cancelled":
         reason = cancellation_reasons.get(order_id, "No reason provided")
         response["cancellation_reason"] = reason
