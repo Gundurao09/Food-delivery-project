@@ -14,7 +14,7 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 ##  Setup Instructions
 
 
-### git clone [(https://github.com/Gundurao09/Food-delivery/)]
+### git clone <"">
 
 ### 2. Create and activate a virtual environment
 
@@ -30,7 +30,6 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 
 - fastapi
 - uvicorn
-- pydantic
 
 ##  Running the API Server
 
@@ -51,5 +50,5 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 
 - Data is stored only in-memory and will reset on server restart.
 - Adding persistent storage like a database (SQLite, PostgreSQL) would improve durability.
-- Authentication & authorization not implemented yet.
+- can also Authentication & authorization can also add.
 - More detailed validation and error handling can be added.
