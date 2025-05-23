@@ -11,11 +11,11 @@ db_lock = threading.Lock()
 class Order(BaseModel):
     order_id: int
     description: str
-    status: str
+    status: str = Field(default="Pending")
     amount: float
-    cancellation_reasons: List[str] = Field(default_factory=list)
 
 orders_db: Dict[int, Order] = {}
+cancellation_reasons: Dict[int, str] = {}
 
 class OrderStatusUpdate(BaseModel):
     status: str
@@ -23,7 +23,7 @@ class OrderStatusUpdate(BaseModel):
 
 VALID_STATUSES = ["Pending", "Successful", "Cancelled"]
 
-@app.post("/orders/", response_model=Order, summary="Create a new order")
+@app.post("/orders/", response_model=Order)
 def create_order(order: Order):
     global order_id_seq
     with db_lock:
@@ -34,11 +34,11 @@ def create_order(order: Order):
         order_id_seq += 1
     return order
 
-@app.get("/orders/", response_model=List[Order], summary="Get list of all orders")
+@app.get("/orders/", response_model=List[Order])
 def list_orders():
     return list(orders_db.values())
 
-@app.get("/orders/summary", summary="Get summary statistics of orders")
+@app.get("/orders/summary")
 def get_order_summary():
     total_orders = len(orders_db)
     total_amount = sum(order.amount for order in orders_db.values())
@@ -47,14 +47,18 @@ def get_order_summary():
         "total_amount": total_amount
     }
 
-@app.get("/orders/{order_id}", response_model=Order, summary="Get details of a specific order")
+@app.get("/orders/{order_id}")
 def get_order(order_id: int):
     order = orders_db.get(order_id)
     if not order:
         raise HTTPException(status_code=404, detail="Order not found")
-    return order
+    response = order.dict()
+    if order.status == "Cancelled":
+        reason = cancellation_reasons.get(order_id, "No reason provided")
+        response["cancellation_reason"] = reason
+    return response
 
-@app.put("/orders/{order_id}", response_model=Order, summary="Update the status of an existing order")
+@app.put("/orders/{order_id}", response_model=Order)
 def update_order_status(order_id: int, update: OrderStatusUpdate):
     if update.status not in VALID_STATUSES:
         raise HTTPException(status_code=400, detail="Invalid status value.")
@@ -66,21 +70,19 @@ def update_order_status(order_id: int, update: OrderStatusUpdate):
 
         current_status = order.status
 
-        # Logic for status transitions
         if current_status == "Successful":
             raise HTTPException(status_code=400, detail="Order is already successful and cannot be updated.")
-
         if current_status == "Cancelled":
             raise HTTPException(status_code=400, detail="Order is already cancelled. Please create a new order.")
 
         if current_status == "Pending":
             if update.status == "Cancelled":
                 reason = update.cancellation_reason or "No reason provided"
-                order.cancellation_reasons.append(reason)
+                cancellation_reasons[order_id] = reason
                 order.status = "Cancelled"
             elif update.status == "Successful":
                 order.status = "Successful"
             else:
                 raise HTTPException(status_code=400, detail="Invalid status update from Pending.")
-        
-        return order 
+
+        return order
