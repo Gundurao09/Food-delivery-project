@@ -1,8 +1,8 @@
-# 🍔 Food-delivery API
+#  Food-delivery API
 
 A FastAPI-based RESTful API for managing food delivery orders with features like status tracking, cancellation reasons, and summary insights. This service uses an in-memory data store and includes thread-safety for concurrent access.
 
-## 🚀 Features
+##  Features
 
 - Create new orders
 - View list of all orders
@@ -11,7 +11,7 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 - View summary statistics (total orders and total amount)
 - Thread-safe in-memory order storage (no database required)
 
-## 📦 Setup Instructions
+##  Setup Instructions
 
 ### 1. Clone the repository
 
@@ -33,14 +33,14 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 - uvicorn
 - pydantic
 
-## 🟢 Running the API Server
+##  Running the API Server
 
 - uvicorn main:app --reload
 
 * Replace main with your Python filename (without .py)
 * The --reload option automatically restarts the server on code changes.
 
-## 📘 API Endpoints Overview
+##  API Endpoints Overview
 
 - POST /orders/ — Create a new order
 - GET /orders/ — List all orders
@@ -48,7 +48,7 @@ A FastAPI-based RESTful API for managing food delivery orders with features like
 - PUT /orders/{order_id} — Update order status
 - GET /orders/summary — Get summary statistics
 
-## ⚠️ Known Limitations / Future Improvements (Optional)
+##  Future Improvements (Optional)
 
 - Data is stored only in-memory and will reset on server restart.
 - Adding persistent storage like a database (SQLite, PostgreSQL) would improve durability.
